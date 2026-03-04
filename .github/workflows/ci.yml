@@ -21,7 +21,7 @@ jobs:
       test-projects: './Notification.sln'
       dotnet-version: '8.0.x'
       build-configuration: 'Release'
-      dockerfile-path: './src/Adapters/Notification.Worker/Dockerfile'
+      dockerfile-path: './src/Adapters/Driving/Notification.Worker/Dockerfile'
       image-name: 'final-challenge-grupo-118-notification'
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
