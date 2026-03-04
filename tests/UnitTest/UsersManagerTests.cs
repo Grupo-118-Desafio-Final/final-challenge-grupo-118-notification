@@ -1,5 +1,8 @@
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Domain.User.Dtos;
 using External.User.API.User;
 using Microsoft.Extensions.Configuration;
