@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services.Interface;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 
