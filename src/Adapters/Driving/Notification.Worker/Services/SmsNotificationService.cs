@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services.Interface;
 using Microsoft.Extensions.Logging;

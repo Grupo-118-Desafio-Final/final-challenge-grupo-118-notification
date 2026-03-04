@@ -1,8 +1,15 @@
+using System;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using External.User.API.User;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 

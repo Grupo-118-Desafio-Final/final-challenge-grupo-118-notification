@@ -2,6 +2,8 @@ using final_challenge_grupo_118_notification;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services;
 using final_challenge_grupo_118_notification.Services.Interface;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
