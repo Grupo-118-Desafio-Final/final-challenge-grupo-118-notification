@@ -26,6 +26,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Adapters\External.User.API\External.User.API.csproj" />
+      <ProjectReference Include="..\..\src\Adapters\Driving\Notification.Worker\Notification.Worker.csproj" />
+      <ProjectReference Include="..\..\src\Core\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>
