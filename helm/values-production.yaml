@@ -1,0 +1,64 @@
+replicaCount: 1
+
+image:
+  repository: ${DOCKER_REGISTRY}
+  imageName: final-challenge-grupo-118-notification
+  tag: "${POC_IMAGE_TAG}"  # Will be set via --set or CI/CD
+  pullPolicy: IfNotPresent
+  
+imagePullSecrets:
+  - name: final-challenge-grupo-118-notification-acr-secret
+
+acrCredentials:
+  enabled: true
+  registry: "${DOCKER_REGISTRY}"
+  username: "${ACR_USERNAME}"  # Will be set via --set or CI/CD
+  password: "${ACR_PASSWORD}"  # Will be set via --set or CI/CD
+  
+nameOverride: "final-challenge-grupo-118-notification"
+fullnameOverride: "final-challenge-grupo-118-notification"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "final-challenge-grupo-118-notification-sa"
+  
+service: {}
+
+
+internalIngress:
+  enabled: false
+  
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+    
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  
+configMap:
+  enabled: false
+  
+secret:
+  enabled: true
+  name: final-challenge-grupo-118-notification
+  annotations: {}
+  data:
+    notification-worker-rabbitmq-connectionstring: "${ConnectionStrings__RabbitMq}"
+
+  envVars:
+    - name: ConnectionStrings__RabbitMq
+      secretKey: notification-worker-rabbitmq-connectionstring
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,16 @@
+﻿services:
+  final-challenge-grupo-118-notification:
+    image: final-challenge-grupo-118-notification
+    build:
+      context: .
+      dockerfile: final-challenge-grupo-118-notification/Dockerfile
+    environment:
+      - ConnectionStrings__RabbitMq=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
