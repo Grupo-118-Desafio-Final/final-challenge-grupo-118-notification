@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.User.Dtos;
 using External.User.API.User;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services;
@@ -65,7 +66,8 @@ public class Worker : BackgroundService
 
             try
             {
-                var notificationMessage = JsonSerializer.Deserialize<NotificationMessage>(message);
+                var decodedMessage = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+                var notificationMessage = JsonSerializer.Deserialize<NotificationMessage>(decodedMessage);
                 if (notificationMessage != null)
                 {
                     var service = _notificationServiceFactory.GetService(NotificationTypeEnum.Email);
@@ -74,16 +76,23 @@ public class Worker : BackgroundService
                         throw new Exception("Service not found");
 
                     var userAPI = new UsersManager(new HttpClient(), _configuration);
-                        var user = await userAPI.GetByIdAsync(notificationMessage.UserId, stoppingToken);
+                    var user = await userAPI.GetByIdAsync(notificationMessage.UserId, stoppingToken);
                         
                     if (user == null)
                         throw new Exception("User not found");
-
+                    //
+                    // var userTeste = new UserResponseDto()
+                    // {
+                    //     Id = 1,
+                    //     Name = "Tiago",
+                    //     Email = "rm361415@fiap.com.br"
+                    // };
+                    // UserResponseDto user = userTeste;
                     var contentMessage = new ContentMessage()
                     {
                         Recipient = user.Email,
                         Subject = "Notification",
-                        Content = notificationMessage.Message
+                        Content = $"{user.Name}, Message: {notificationMessage.Message} {(!notificationMessage.IsSuccess ? $" Exception: {notificationMessage.ExceptionMessage}" : "" )} CreatedAt: {notificationMessage.CreatedAt}" 
                     };
                     await service.SendAsync(contentMessage);
                 }

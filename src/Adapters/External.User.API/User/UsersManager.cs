@@ -15,12 +15,15 @@ public class UsersManager : IUserManager
 {
     private readonly HttpClient _httpClient;
     private readonly string _userApiBaseUrl;
+    private readonly string _userApiHash;
     
     public UsersManager(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _userApiBaseUrl = configuration["UserApi:BaseUrl"] ??
                               throw new ArgumentNullException("UserApi:BaseUrl configuration is missing.");
+        _userApiHash = configuration["UserApiHash"] ??
+                              throw new ArgumentNullException("UserApiHash configuration is missing.");
     }
     public async Task<UserResponseDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
@@ -57,7 +60,10 @@ public class UsersManager : IUserManager
 
     private async Task<string> Login(CancellationToken cancellationToken)
     {
-        var response = await _httpClient.PostAsync($"{_userApiBaseUrl}/users/login", null, cancellationToken);
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"{_userApiBaseUrl}/users/login");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", _userApiHash);
+
+        var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.IsSuccessStatusCode)
         {
