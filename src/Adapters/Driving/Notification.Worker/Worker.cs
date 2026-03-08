@@ -80,14 +80,7 @@ public class Worker : BackgroundService
                         
                     if (user == null)
                         throw new Exception("User not found");
-                    //
-                    // var userTeste = new UserResponseDto()
-                    // {
-                    //     Id = 1,
-                    //     Name = "Tiago",
-                    //     Email = "rm361415@fiap.com.br"
-                    // };
-                    // UserResponseDto user = userTeste;
+                    
                     var contentMessage = new ContentMessage()
                     {
                         Recipient = user.Email,
