@@ -1,0 +1,86 @@
+replicaCount: 1
+
+image:
+  repository: ${DOCKER_REGISTRY}
+  imageName: final-challenge-grupo-118-notification
+  tag: "${POC_IMAGE_TAG}"  # Will be set via --set or CI/CD
+  pullPolicy: IfNotPresent
+  
+imagePullSecrets:
+  - name: final-challenge-grupo-118-notification-acr-secret
+
+acrCredentials:
+  enabled: true
+  registry: "${DOCKER_REGISTRY}"
+  username: "${ACR_USERNAME}"  # Will be set via --set or CI/CD
+  password: "${ACR_PASSWORD}"  # Will be set via --set or CI/CD
+  
+nameOverride: "final-challenge-grupo-118-notification"
+fullnameOverride: "final-challenge-grupo-118-notification"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "final-challenge-grupo-118-notification-sa"
+  
+service: {}
+
+
+internalIngress:
+  enabled: false
+  
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+    
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  
+configMap:
+  enabled: false
+  
+secret:
+  enabled: true
+  name: final-challenge-grupo-118-notification
+  annotations: {}
+  data:
+    notification-worker-rabbitmq-connectionstring: "${RabbitMqSettings__ConnectionString}"
+    notification-worker-emailsettings-smtpserver: "${EmailSettings__SmtpServer}"
+    notification-worker-emailsettings-port: "${EmailSettings__Port}"
+    notification-worker-emailsettings-sendername: "${EmailSettings__SenderName}"
+    notification-worker-emailsettings-senderemail: "${EmailSettings__SenderEmail}"
+    notification-worker-emailsettings-username: "${EmailSettings__Username}"
+    notification-worker-emailsettings-password: "${EmailSettings__Password}"
+    otlp-url: "${OpenTelemetry__Url}"
+
+  envVars:
+    - name: RabbitMqSettings__ConnectionString
+      secretKey: notification-worker-rabbitmq-connectionstring
+    - name: EmailSettings__SmtpServer
+      secretKey: notification-worker-emailsettings-smtpserver
+    - name: EmailSettings__Port
+      secretKey: notification-worker-emailsettings-port
+    - name: EmailSettings__SenderName
+      secretKey: notification-worker-emailsettings-sendername
+    - name: EmailSettings__SenderEmail
+      secretKey: notification-worker-emailsettings-senderemail            
+    - name: EmailSettings__Username
+      secretKey: notification-worker-emailsettings-username
+    - name: EmailSettings__Password
+      secretKey: notification-worker-emailsettings-password
+    - name: OpenTelemetry__Url
+      secretKey: otlp-url
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
