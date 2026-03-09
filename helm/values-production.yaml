@@ -58,6 +58,8 @@ secret:
     notification-worker-emailsettings-senderemail: "${EmailSettings__SenderEmail}"
     notification-worker-emailsettings-username: "${EmailSettings__Username}"
     notification-worker-emailsettings-password: "${EmailSettings__Password}"
+    user-api-baseurl: "${UserApi__BaseUrl}"
+    user-api-hash: "${UserApi__UserApiHash}"
     otlp-url: "${OpenTelemetry__Url}"
 
   envVars:
@@ -75,8 +77,13 @@ secret:
       secretKey: notification-worker-emailsettings-username
     - name: EmailSettings__Password
       secretKey: notification-worker-emailsettings-password
+    - name: UserApi__BaseUrl
+      secretKey: user-api-baseurl
+    - name: UserApi__UserApiHash
+      secretKey: user-api-hash
     - name: OpenTelemetry__Url
       secretKey: otlp-url
+      
 
 
 nodeSelector: {}
