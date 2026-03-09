@@ -51,7 +51,7 @@ secret:
   name: final-challenge-grupo-118-notification
   annotations: {}
   data:
-    notification-worker-rabbitmq-connectionstring: "${ConnectionStrings__RabbitMq}"
+    notification-worker-rabbitmq-connectionstring: "${RabbitMqSettings__ConnectionString}"
     notification-worker-emailsettings-smtpserver: "${EmailSettings__SmtpServer}"
     notification-worker-emailsettings-port: "${EmailSettings__Port}"
     notification-worker-emailsettings-sendername: "${EmailSettings__SenderName}"
@@ -61,7 +61,7 @@ secret:
     otlp-url: "${OpenTelemetry__Url}"
 
   envVars:
-    - name: ConnectionStrings__RabbitMq
+    - name: RabbitMqSettings__ConnectionString
       secretKey: notification-worker-rabbitmq-connectionstring
     - name: EmailSettings__SmtpServer
       secretKey: notification-worker-emailsettings-smtpserver

@@ -6,30 +6,34 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.User.Dtos;
 using Domain.User.Ports.In;
+using External.User.API.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace External.User.API.User;
-
 
 public class UsersManager : IUserManager
 {
     private readonly HttpClient _httpClient;
     private readonly string _userApiBaseUrl;
     private readonly string _userApiHash;
-    
-    public UsersManager(HttpClient httpClient, IConfiguration configuration)
+
+    public UsersManager(HttpClient httpClient, UserApiSettings userApiSettings)
     {
         _httpClient = httpClient;
-        _userApiBaseUrl = configuration["UserApi:BaseUrl"] ??
-                              throw new ArgumentNullException("UserApi:BaseUrl configuration is missing.");
-        _userApiHash = configuration["UserApiHash"] ??
-                              throw new ArgumentNullException("UserApiHash configuration is missing.");
+
+        _userApiBaseUrl = userApiSettings.BaseUrl ?? throw new ArgumentNullException(nameof(userApiSettings.BaseUrl),
+            "UserApi:BaseUrl configuration is missing.");
+
+        _userApiHash = userApiSettings.UserApiHash ??
+                       throw new ArgumentNullException(nameof(userApiSettings.UserApiHash),
+                           "UserApiHash configuration is missing.");
     }
+
     public async Task<UserResponseDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var userEntity = new UserResponseDto();
         var token = await Login(cancellationToken);
-        
+
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -54,7 +58,7 @@ public class UsersManager : IUserManager
                 userEntity.Email = email;
             }
         }
-        
+
         return userEntity;
     }
 

@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.User.Dtos;
+using External.User.API.Models;
 using External.User.API.User;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -18,19 +19,20 @@ public class UsersManagerTests
     private HttpClient _httpClient;
     private Mock<IConfiguration> _configurationMock;
     private UsersManager _usersManager;
+    private UserApiSettings _userApiSettings;
 
     [SetUp]
     public void Setup()
     {
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
         _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
-        _configurationMock = new Mock<IConfiguration>();
-        
-        // Setup configuration mocks
-        _configurationMock.Setup(c => c["UserApi:BaseUrl"]).Returns("http://localhost:5000");
-        _configurationMock.Setup(c => c["UserApiHash"]).Returns("test-hash");
+        _userApiSettings = new UserApiSettings
+        {
+            BaseUrl = "http://localhost:5000",
+            UserApiHash = "test-hash"
+        };
 
-        _usersManager = new UsersManager(_httpClient, _configurationMock.Object);
+        _usersManager = new UsersManager(_httpClient, _userApiSettings);
     }
 
     [TearDown]
@@ -45,7 +47,7 @@ public class UsersManagerTests
         // Arrange
         var userId = 1;
         var token = "test-token";
-        
+
         // Response for Login
         var loginResponseData = new
         {
@@ -54,7 +56,7 @@ public class UsersManagerTests
                 token = token
             }
         };
-        
+
         // Response for GetById
         var userResponseData = new
         {
@@ -121,26 +123,26 @@ public class UsersManagerTests
         // Depending on implementation, if login fails, it might return an empty user object or null.
         // Looking at the code: var userEntity = new UserResponseDto(); ... return userEntity;
         // So it returns an empty object (Id=0, Name=null, etc.) if login fails (token is empty) or if GetById fails.
-        
+
         // However, if Login fails, token is empty.
         // Then: if (!string.IsNullOrEmpty(token)) ... else it proceeds without Auth header?
         // The code says:
         // var token = await Login(cancellationToken);
         // if (!string.IsNullOrEmpty(token)) { ... }
         // var response = await _httpClient.GetAsync(...)
-        
+
         // So if login fails, it still tries to call GetAsync but without the Bearer token.
         // The mock needs to handle the second call too, or the code will crash if the mock doesn't expect a second call?
         // Actually, if I use Setup instead of SetupSequence, it returns the same response for all calls.
         // But here we want to simulate Login failing.
-        
+
         // If Login fails (returns Unauthorized), the code catches nothing, it just returns string.Empty for token.
         // Then it calls GetAsync.
         // So the mock MUST expect a second call (GetAsync) or I should use Setup to return Unauthorized for ANY call.
-        
+
         // Let's use SetupSequence to be precise: Login fails, then GetAsync fails (or succeeds? usually if login fails, get fails).
         // Let's assume if login fails, the subsequent call also fails or returns 401.
-        
+
         var getUserResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
         _httpMessageHandlerMock

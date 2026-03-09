@@ -33,7 +33,7 @@ jobs:
             "DOCKER_REGISTRY": "DOCKER_REGISTRY",
             "ACR_USERNAME": "ACR_USERNAME",
             "ACR_PASSWORD": "ACR_PASSWORD",
-            "ConnectionStrings__RabbitMq":"APPLICATION_MESSAGING_CONNECTIONSTRING",
+            "RabbitMqSettings__ConnectionString":"APPLICATION_MESSAGING_CONNECTIONSTRING",
             "EmailSettings__SmtpServer":"NOTIFICATION_EMAILSETTINGS_SMTPSERVER",
             "EmailSettings__Port":"NOTIFICATION_EMAILSETTINGS_PORT",
             "EmailSettings__SenderName":"NOTIFICATION_EMAILSETTINGS_SENDERNAME",
