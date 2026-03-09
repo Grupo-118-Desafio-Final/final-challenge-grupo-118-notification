@@ -33,7 +33,14 @@ jobs:
             "DOCKER_REGISTRY": "DOCKER_REGISTRY",
             "ACR_USERNAME": "ACR_USERNAME",
             "ACR_PASSWORD": "ACR_PASSWORD",
-            "ConnectionStrings__RabbitMq":"APPLICATION_MESSAGING_CONNECTIONSTRING"
+            "ConnectionStrings__RabbitMq":"APPLICATION_MESSAGING_CONNECTIONSTRING",
+            "EmailSettings__SmtpServer":"NOTIFICATION_EMAILSETTINGS_SMTPSERVER",
+            "EmailSettings__Port":"NOTIFICATION_EMAILSETTINGS_PORT",
+            "EmailSettings__SenderName":"NOTIFICATION_EMAILSETTINGS_SENDERNAME",
+            "EmailSettings__SenderEmail":"NOTIFICATION_EMAILSETTINGS_SENDEREMAIL",
+            "EmailSettings__Username":"NOTIFICATION_EMAILSETTINGS_USERNAME",
+            "EmailSettings__Password":"NOTIFICATION_EMAILSETTINGS_PASSWORD",
+            "OpenTelemetry__Url": "GRAFANA_OTLP_URL"
         }
       variables_mapping: |
         {

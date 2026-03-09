@@ -52,10 +52,32 @@ secret:
   annotations: {}
   data:
     notification-worker-rabbitmq-connectionstring: "${ConnectionStrings__RabbitMq}"
+    notification-worker-emailsettings-smtpserver: "${EmailSettings__SmtpServer}"
+    notification-worker-emailsettings-port: "${EmailSettings__Port}"
+    notification-worker-emailsettings-sendername: "${EmailSettings__SenderName}"
+    notification-worker-emailsettings-senderemail: "${EmailSettings__SenderEmail}"
+    notification-worker-emailsettings-username: "${EmailSettings__Username}"
+    notification-worker-emailsettings-password: "${EmailSettings__Password}"
+    otlp-url: "${OpenTelemetry__Url}"
 
   envVars:
     - name: ConnectionStrings__RabbitMq
       secretKey: notification-worker-rabbitmq-connectionstring
+    - name: EmailSettings__SmtpServer
+      secretKey: notification-worker-emailsettings-smtpserver
+    - name: EmailSettings__Port
+      secretKey: notification-worker-emailsettings-port
+    - name: EmailSettings__SenderName
+      secretKey: notification-worker-emailsettings-sendername
+    - name: EmailSettings__SenderEmail
+      secretKey: notification-worker-emailsettings-senderemail            
+    - name: EmailSettings__Username
+      secretKey: notification-worker-emailsettings-username
+    - name: EmailSettings__Password
+      secretKey: notification-worker-emailsettings-password
+    - name: OpenTelemetry__Url
+      secretKey: otlp-url
+
 
 nodeSelector: {}
 
