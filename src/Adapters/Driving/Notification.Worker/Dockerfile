@@ -1,13 +1,15 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/runtime:8.0-alpine AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
 COPY ["src/Adapters/Driving/Notification.Worker/Notification.Worker.csproj", "src/Adapters/Driving/Notification.Worker/"]
 COPY ["src/Adapters/External.User.API/External.User.API.csproj", "src/Adapters/External.User.API/"]
 COPY ["src/Core/Domain/Domain.csproj", "src/Core/Domain/"]
 RUN dotnet restore "src/Adapters/Driving/Notification.Worker/Notification.Worker.csproj"
+
 COPY . .
 WORKDIR "/src/src/Adapters/Driving/Notification.Worker"
 RUN dotnet build "./Notification.Worker.csproj" -c $BUILD_CONFIGURATION -o /app/build
