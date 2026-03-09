@@ -32,12 +32,8 @@ public class UsersManager : IUserManager
     public async Task<UserResponseDto?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         var userEntity = new UserResponseDto();
-        var token = await Login(cancellationToken);
 
-        if (!string.IsNullOrEmpty(token))
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
+        _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _userApiHash);
 
         var response = await _httpClient.GetAsync($"{_userApiBaseUrl}/users/{id}", cancellationToken);
 
@@ -60,26 +56,5 @@ public class UsersManager : IUserManager
         }
 
         return userEntity;
-    }
-
-    private async Task<string> Login(CancellationToken cancellationToken)
-    {
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"{_userApiBaseUrl}/users/login");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", _userApiHash);
-
-        var response = await _httpClient.SendAsync(request, cancellationToken);
-
-        if (response.IsSuccessStatusCode)
-        {
-            using var jsonDoc = await JsonDocument.ParseAsync(
-                await response.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
-            var root = jsonDoc.RootElement;
-            if (root.TryGetProperty("data", out var dataElement))
-            {
-                return dataElement.GetProperty("token").GetString() ?? string.Empty;
-            }
-        }
-
-        return string.Empty;
     }
 }

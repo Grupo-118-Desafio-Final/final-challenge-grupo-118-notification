@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -18,7 +19,6 @@ public class UsersManagerTests
 {
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private HttpClient _httpClient;
-    private Mock<IConfiguration> _configurationMock;
     private UsersManager _usersManager;
     private UserApiSettings _userApiSettings;
 
@@ -47,16 +47,6 @@ public class UsersManagerTests
     {
         // Arrange
         var userId = "123";
-        var token = "test-token";
-
-        // Response for Login
-        var loginResponseData = new
-        {
-            data = new
-            {
-                token = token
-            }
-        };
 
         // Response for GetById
         var userResponseData = new
@@ -69,11 +59,6 @@ public class UsersManagerTests
             }
         };
 
-        var loginResponse = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StringContent(JsonSerializer.Serialize(loginResponseData))
-        };
-
         var getUserResponse = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(JsonSerializer.Serialize(userResponseData))
@@ -81,12 +66,16 @@ public class UsersManagerTests
 
         _httpMessageHandlerMock
             .Protected()
-            .SetupSequence<Task<HttpResponseMessage>>(
+            .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri.ToString() == $"http://localhost:5000/users/{userId}" &&
+                    req.Headers.Contains("X-Api-Key") &&
+                    req.Headers.GetValues("X-Api-Key").Contains("test-hash")
+                ),
                 ItExpr.IsAny<CancellationToken>()
             )
-            .ReturnsAsync(loginResponse)
             .ReturnsAsync(getUserResponse);
 
         // Act
@@ -101,46 +90,31 @@ public class UsersManagerTests
     }
 
     [Test]
-    public async Task GetByIdAsync_ShouldReturnEmptyUser_WhenLoginFails()
+    public async Task GetByIdAsync_ShouldReturnEmptyUser_WhenApiCallFails()
     {
         // Arrange
         var userId = "123";
-        var loginResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
+        var getUserResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri.ToString() == $"http://localhost:5000/users/{userId}"
+                ),
                 ItExpr.IsAny<CancellationToken>()
             )
-            .ReturnsAsync(loginResponse);
+            .ReturnsAsync(getUserResponse);
 
         // Act
         var result = await _usersManager.GetByIdAsync(userId, CancellationToken.None);
 
         // Assert
         Assert.IsNotNull(result);
-
-        var getUserResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-
-        _httpMessageHandlerMock
-            .Protected()
-            .SetupSequence<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>()
-            )
-            .ReturnsAsync(loginResponse)
-            .ReturnsAsync(getUserResponse);
-
-        // Act
-        var result2 = await _usersManager.GetByIdAsync(userId, CancellationToken.None);
-
-        // Assert
-        Assert.IsNotNull(result2);
-        Assert.AreEqual(null, result2.Id);
-        Assert.IsNull(result2.Name);
+        Assert.AreEqual(null, result.Id);
+        Assert.IsNull(result.Name);
     }
 
     [Test]
@@ -148,30 +122,18 @@ public class UsersManagerTests
     {
         // Arrange
         var userId = "234";
-        var token = "test-token";
-        var loginResponseData = new
-        {
-            data = new
-            {
-                token = token
-            }
-        };
-
-        var loginResponse = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StringContent(JsonSerializer.Serialize(loginResponseData))
-        };
-
         var getUserResponse = new HttpResponseMessage(HttpStatusCode.NotFound);
 
         _httpMessageHandlerMock
             .Protected()
-            .SetupSequence<Task<HttpResponseMessage>>(
+            .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri.ToString() == $"http://localhost:5000/users/{userId}"
+                ),
                 ItExpr.IsAny<CancellationToken>()
             )
-            .ReturnsAsync(loginResponse)
             .ReturnsAsync(getUserResponse);
 
         // Act
