@@ -10,7 +10,7 @@ public class NotificationMessage
 {
     [JsonPropertyName("isSuccess")] public bool IsSuccess { get; set; }
 
-    [JsonPropertyName("userId")] public int UserId { get; set; }
+    [JsonPropertyName("userId")] public string UserId { get; set; }
 
     [JsonPropertyName("message")] public string Message { get; set; }
 

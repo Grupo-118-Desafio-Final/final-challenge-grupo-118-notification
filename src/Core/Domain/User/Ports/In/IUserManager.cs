@@ -6,5 +6,5 @@ namespace Domain.User.Ports.In;
 
 public interface IUserManager
 {
-    Task<UserResponseDto?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<UserResponseDto?> GetByIdAsync(string id, CancellationToken cancellationToken);
 }
