@@ -69,11 +69,6 @@ public class Worker : BackgroundService
 
             try
             {
-                JsonSerializerOptions options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                };
-
                 var notificationMessage = JsonSerializer.Deserialize<NotificationMessage>(message);
 
                 if (notificationMessage != null)

@@ -42,17 +42,15 @@ public class UsersManager : IUserManager
             using var jsonDoc = await JsonDocument.ParseAsync(
                 await response.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
             var root = jsonDoc.RootElement;
-            if (root.TryGetProperty("data", out var dataElement))
-            {
-                var name = dataElement.GetProperty("name").GetString() ?? string.Empty;
-                var lastName = dataElement.GetProperty("lastName").GetString() ?? string.Empty;
-                var email = dataElement.GetProperty("email").GetString() ?? string.Empty;
 
-                userEntity.Id = id;
-                userEntity.Name = name;
-                userEntity.LastName = lastName;
-                userEntity.Email = email;
-            }
+            var name = root.GetProperty("name").GetString() ?? string.Empty;
+            var lastName = root.GetProperty("lastName").GetString() ?? string.Empty;
+            var email = root.GetProperty("email").GetString() ?? string.Empty;
+
+            userEntity.Id = id;
+            userEntity.Name = name;
+            userEntity.LastName = lastName;
+            userEntity.Email = email;
         }
 
         return userEntity;
