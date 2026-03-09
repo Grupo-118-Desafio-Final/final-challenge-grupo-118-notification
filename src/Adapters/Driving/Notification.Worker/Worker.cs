@@ -51,12 +51,6 @@ public class Worker : BackgroundService
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 
-        _channel.QueueDeclare(queue: _rabbitMqSettings.QueueName,
-            durable: false,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null);
-
         _logger.LogInformation("Waiting for messages.");
 
         return base.StartAsync(cancellationToken);
