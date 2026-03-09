@@ -46,7 +46,7 @@ public class UsersManagerTests
     public async Task GetByIdAsync_ShouldReturnUser_WhenApiCallIsSuccessful()
     {
         // Arrange
-        var userId = 1;
+        var userId = "123";
         var token = "test-token";
 
         // Response for Login
@@ -104,7 +104,7 @@ public class UsersManagerTests
     public async Task GetByIdAsync_ShouldReturnEmptyUser_WhenLoginFails()
     {
         // Arrange
-        var userId = 1;
+        var userId = "123";
         var loginResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
         _httpMessageHandlerMock
@@ -121,28 +121,6 @@ public class UsersManagerTests
 
         // Assert
         Assert.IsNotNull(result);
-        // Depending on implementation, if login fails, it might return an empty user object or null.
-        // Looking at the code: var userEntity = new UserResponseDto(); ... return userEntity;
-        // So it returns an empty object (Id=0, Name=null, etc.) if login fails (token is empty) or if GetById fails.
-
-        // However, if Login fails, token is empty.
-        // Then: if (!string.IsNullOrEmpty(token)) ... else it proceeds without Auth header?
-        // The code says:
-        // var token = await Login(cancellationToken);
-        // if (!string.IsNullOrEmpty(token)) { ... }
-        // var response = await _httpClient.GetAsync(...)
-
-        // So if login fails, it still tries to call GetAsync but without the Bearer token.
-        // The mock needs to handle the second call too, or the code will crash if the mock doesn't expect a second call?
-        // Actually, if I use Setup instead of SetupSequence, it returns the same response for all calls.
-        // But here we want to simulate Login failing.
-
-        // If Login fails (returns Unauthorized), the code catches nothing, it just returns string.Empty for token.
-        // Then it calls GetAsync.
-        // So the mock MUST expect a second call (GetAsync) or I should use Setup to return Unauthorized for ANY call.
-
-        // Let's use SetupSequence to be precise: Login fails, then GetAsync fails (or succeeds? usually if login fails, get fails).
-        // Let's assume if login fails, the subsequent call also fails or returns 401.
 
         var getUserResponse = new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
@@ -161,7 +139,7 @@ public class UsersManagerTests
 
         // Assert
         Assert.IsNotNull(result2);
-        Assert.AreEqual(0, result2.Id);
+        Assert.AreEqual(null, result2.Id);
         Assert.IsNull(result2.Name);
     }
 
@@ -169,7 +147,7 @@ public class UsersManagerTests
     public async Task GetByIdAsync_ShouldReturnEmptyUser_WhenGetUserFails()
     {
         // Arrange
-        var userId = 1;
+        var userId = "234";
         var token = "test-token";
         var loginResponseData = new
         {
@@ -201,12 +179,13 @@ public class UsersManagerTests
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(0, result.Id);
+        Assert.AreEqual(null, result.Id);
         Assert.IsNull(result.Name);
     }
 
     [Test]
-    public async Task InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnBaseUrlCheck()
+    public async Task
+        InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnBaseUrlCheck()
     {
         // Arrange
         var invalidSettings = new UserApiSettings
@@ -218,9 +197,10 @@ public class UsersManagerTests
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new UsersManager(_httpClient, invalidSettings));
     }
-    
+
     [Test]
-    public async Task InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnApiHashCheck()
+    public async Task
+        InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnApiHashCheck()
     {
         // Arrange
         var invalidSettings = new UserApiSettings
@@ -231,6 +211,5 @@ public class UsersManagerTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new UsersManager(_httpClient, invalidSettings));
-    }    
-    
+    }
 }

@@ -29,7 +29,7 @@ public class UsersManager : IUserManager
                            "UserApiHash configuration is missing.");
     }
 
-    public async Task<UserResponseDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<UserResponseDto?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         var userEntity = new UserResponseDto();
         var token = await Login(cancellationToken);
@@ -39,7 +39,7 @@ public class UsersManager : IUserManager
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        var response = await _httpClient.GetAsync($"{_userApiBaseUrl}/users/GetById/{id}", cancellationToken);
+        var response = await _httpClient.GetAsync($"{_userApiBaseUrl}/users/{id}", cancellationToken);
 
         if (response.IsSuccessStatusCode)
         {
