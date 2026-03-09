@@ -12,6 +12,13 @@ using StandardDependencies.Models;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+var openTelemetryOptions = builder
+    .Configuration
+    .GetSection(OpenTelemetryOptions.SectionName)
+    .Get<OpenTelemetryOptions>();
+
+builder.ConfigureCommonElements(openTelemetryOptions);
+
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<SmsNotificationService>();
@@ -28,13 +35,6 @@ builder.Services.AddTransient<ISmsService, SmsNotificationService>();
 
 builder.Services.Configure<UserApiSettings>(builder.Configuration.GetSection("UserApi"));
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
-
-var openTelemetryOptions = builder
-    .Configuration
-    .GetSection(OpenTelemetryOptions.SectionName)
-    .Get<OpenTelemetryOptions>();
-
-builder.ConfigureCommonElements(openTelemetryOptions);
 
 var host = builder.Build();
 host.Run();

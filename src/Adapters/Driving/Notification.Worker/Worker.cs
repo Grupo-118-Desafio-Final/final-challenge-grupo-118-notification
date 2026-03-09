@@ -13,6 +13,7 @@ using final_challenge_grupo_118_notification.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -29,14 +30,14 @@ public class Worker : BackgroundService
     private IModel _channel;
 
     public Worker(ILogger<Worker> logger,
-        RabbitMQSettings rabbitMqSettings,
+        IOptions<RabbitMQSettings> rabbitMqSettings,
         NotificationServiceFactory notificationServiceFactory,
-        UserApiSettings userApiSettings)
+        IOptions<UserApiSettings> userApiSettings)
     {
         _logger = logger;
         _notificationServiceFactory = notificationServiceFactory;
-        _rabbitMqSettings = rabbitMqSettings;
-        _userApiSettings = userApiSettings;
+        _rabbitMqSettings = rabbitMqSettings.Value;
+        _userApiSettings = userApiSettings.Value;
     }
 
     public override Task StartAsync(CancellationToken cancellationToken)
