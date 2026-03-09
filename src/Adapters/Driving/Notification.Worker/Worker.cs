@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -17,6 +18,7 @@ using RabbitMQ.Client.Events;
 
 namespace final_challenge_grupo_118_notification;
 
+[ExcludeFromCodeCoverage]
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
