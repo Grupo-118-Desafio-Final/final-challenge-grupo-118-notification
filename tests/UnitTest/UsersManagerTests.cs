@@ -86,6 +86,8 @@ public class UsersManagerTests
         Assert.AreEqual("john.doe@example.com", result.Email);
     }
 
+    
+    
     [Test]
     public async Task GetByIdAsync_ShouldReturnEmptyUser_WhenApiCallFails()
     {

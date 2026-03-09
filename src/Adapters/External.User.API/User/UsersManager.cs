@@ -43,9 +43,9 @@ public class UsersManager : IUserManager
                 await response.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
             var root = jsonDoc.RootElement;
 
-            var name = root.GetProperty("name").GetString() ?? string.Empty;
-            var lastName = root.GetProperty("lastName").GetString() ?? string.Empty;
-            var email = root.GetProperty("email").GetString() ?? string.Empty;
+            var name = root.GetProperty("name").GetString();
+            var lastName = root.GetProperty("lastName").GetString();
+            var email = root.GetProperty("email").GetString();
 
             userEntity.Id = id;
             userEntity.Name = name;
