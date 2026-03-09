@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -19,5 +18,19 @@ RUN dotnet publish "./Notification.Worker.csproj" -c $BUILD_CONFIGURATION -o /ap
 
 FROM base AS final
 WORKDIR /app
+
+ENV \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+
+RUN apk add --no-cache \
+    icu-data-full \
+    icu-libs \
+    curl
+
 COPY --from=publish /app/publish .
+
+USER $APP_UID
+
 ENTRYPOINT ["dotnet", "Notification.Worker.dll"]
