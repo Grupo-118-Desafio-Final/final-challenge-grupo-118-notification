@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using External.User.API.Models;
 using final_challenge_grupo_118_notification;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services;
@@ -24,6 +25,9 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.Configure<SmsSettings>(builder.Configuration.GetSection("SmsSettings"));
 builder.Services.AddTransient<ISmsService, SmsNotificationService>();
+
+builder.Services.Configure<UserApiSettings>(builder.Configuration.GetSection("UserApi"));
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
 
 var openTelemetryOptions = builder
     .Configuration
