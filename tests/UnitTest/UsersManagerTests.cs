@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -203,4 +204,33 @@ public class UsersManagerTests
         Assert.AreEqual(0, result.Id);
         Assert.IsNull(result.Name);
     }
+
+    [Test]
+    public async Task InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnBaseUrlCheck()
+    {
+        // Arrange
+        var invalidSettings = new UserApiSettings
+        {
+            BaseUrl = null,
+            UserApiHash = "test-hash"
+        };
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => new UsersManager(_httpClient, invalidSettings));
+    }
+    
+    [Test]
+    public async Task InstantiateUserManager_WithoutDefinedUSerProperties_ShouldThrowArgumentNullExceptionOnApiHashCheck()
+    {
+        // Arrange
+        var invalidSettings = new UserApiSettings
+        {
+            BaseUrl = "http://localhost:5000",
+            UserApiHash = null
+        };
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => new UsersManager(_httpClient, invalidSettings));
+    }    
+    
 }
