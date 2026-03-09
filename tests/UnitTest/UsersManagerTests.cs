@@ -51,12 +51,9 @@ public class UsersManagerTests
         // Response for GetById
         var userResponseData = new
         {
-            data = new
-            {
-                name = "John",
-                lastName = "Doe",
-                email = "john.doe@example.com"
-            }
+            name = "John",
+            lastName = "Doe",
+            email = "john.doe@example.com"
         };
 
         var getUserResponse = new HttpResponseMessage(HttpStatusCode.OK)
