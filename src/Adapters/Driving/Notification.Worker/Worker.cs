@@ -69,8 +69,13 @@ public class Worker : BackgroundService
 
             try
             {
-                var decodedMessage = Encoding.UTF8.GetString(Convert.FromBase64String(message));
-                var notificationMessage = JsonSerializer.Deserialize<NotificationMessage>(decodedMessage);
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+
+                var notificationMessage = JsonSerializer.Deserialize<NotificationMessage>(message);
+
                 if (notificationMessage != null)
                 {
                     var service = _notificationServiceFactory.GetService(NotificationTypeEnum.Email);
@@ -93,6 +98,8 @@ public class Worker : BackgroundService
                     };
                     await service.SendAsync(contentMessage);
                 }
+
+                _channel.BasicAck(ea.DeliveryTag, false);
             }
             catch (Exception ex)
             {
@@ -101,7 +108,7 @@ public class Worker : BackgroundService
         };
 
         _channel.BasicConsume(queue: _rabbitMqSettings.QueueName,
-            autoAck: true,
+            autoAck: false,
             consumer: consumer);
 
         return Task.CompletedTask;
