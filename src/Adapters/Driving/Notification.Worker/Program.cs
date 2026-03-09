@@ -25,13 +25,10 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<SmsSettings>(builder.Configuration.GetSection("SmsSettings"));
 builder.Services.AddTransient<ISmsService, SmsNotificationService>();
 
-var openTelemetryOptions = new OpenTelemetryOptions
-{
-    ServiceName = "NotificationWorker",
-    ServiceVersion = "1.0.0",
-    Url = "https://localhost:4318",
-    Exporters = new List<ExporterTypes> { ExporterTypes.OTLP }
-};
+var openTelemetryOptions = builder
+    .Configuration
+    .GetSection(OpenTelemetryOptions.SectionName)
+    .Get<OpenTelemetryOptions>();
 
 builder.ConfigureCommonElements(openTelemetryOptions);
 
