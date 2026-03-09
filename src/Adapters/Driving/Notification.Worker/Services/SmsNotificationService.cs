@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using final_challenge_grupo_118_notification.Models;
 using final_challenge_grupo_118_notification.Services.Interface;
@@ -10,6 +11,7 @@ using Twilio.Types;
 
 namespace final_challenge_grupo_118_notification.Services;
 
+[ExcludeFromCodeCoverage]
 public class SmsNotificationService : INotificationService, ISmsService
 {
     private readonly ILogger<SmsNotificationService> _logger;

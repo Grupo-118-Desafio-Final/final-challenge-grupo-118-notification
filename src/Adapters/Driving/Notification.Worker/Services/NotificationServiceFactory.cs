@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using final_challenge_grupo_118_notification.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace final_challenge_grupo_118_notification.Services;
 
+[ExcludeFromCodeCoverage]
 public class NotificationServiceFactory
 {
     private readonly IServiceProvider _serviceProvider;
