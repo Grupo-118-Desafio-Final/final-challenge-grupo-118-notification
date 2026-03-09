@@ -40,6 +40,8 @@ jobs:
             "EmailSettings__SenderEmail":"NOTIFICATION_EMAILSETTINGS_SENDEREMAIL",
             "EmailSettings__Username":"NOTIFICATION_EMAILSETTINGS_USERNAME",
             "EmailSettings__Password":"NOTIFICATION_EMAILSETTINGS_PASSWORD",
+            "UserApi__BaseUrl": "API_BACKOFFICE_BASEURL",
+            "UserApi__UserApiHash": "API_BACKOFFICE_HASH",        
             "OpenTelemetry__Url": "GRAFANA_OTLP_URL"
         }
       variables_mapping: |
