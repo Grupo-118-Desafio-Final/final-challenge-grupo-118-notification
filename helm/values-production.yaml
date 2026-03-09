@@ -25,6 +25,8 @@ serviceAccount:
   
 service: {}
 
+livenessProbe: {}
+readinessProbe: {}
 
 internalIngress:
   enabled: false
