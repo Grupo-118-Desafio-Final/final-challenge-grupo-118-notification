@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace final_challenge_grupo_118_notification.Models;
 
+[ExcludeFromCodeCoverage]
 public class NotificationMessage
 {
     public bool IsSuccess { get; set; }
