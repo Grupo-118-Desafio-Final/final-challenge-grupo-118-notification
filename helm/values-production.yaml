@@ -23,7 +23,7 @@ serviceAccount:
   annotations: {}
   name: "final-challenge-grupo-118-notification-sa"
   
-service: {}
+service: null
 
 livenessProbe: null
 readinessProbe: null
