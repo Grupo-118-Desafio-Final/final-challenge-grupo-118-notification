@@ -25,19 +25,17 @@ public class SmsNotificationService : INotificationService, ISmsService
         TwilioClient.Init(_settings.AccountSid, _settings.AuthToken);
     }
 
-    public async Task SendAsync(NotificationMessage message)
+        
+    public async Task<Task> SendAsync(ContentMessage message)
     {
-        _logger.LogInformation($"Sending SMS to {message.UserId}: {message.Message}");
-        // Implementação real de envio de SMS aqui
+        _logger.LogInformation($"Sending SMS to {message.Recipient}: {message.Content}");
+        
         await MessageResource.CreateAsync(
-            body: message.Message,
+            body: message.Content,
             from: new PhoneNumber(_settings.FromPhoneNumber),
-            to: new PhoneNumber("")
+            to: new PhoneNumber(message.Recipient)
         );
-    }
 
-    public Task<Task> SendAsync(ContentMessage message)
-    {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

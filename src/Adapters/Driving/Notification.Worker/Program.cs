@@ -20,21 +20,18 @@ var openTelemetryOptions = builder
 builder.ConfigureCommonElements(openTelemetryOptions);
 
 builder.Services.AddHostedService<Worker>();
-builder.Services.AddSingleton<EmailService>();
-builder.Services.AddSingleton<SmsNotificationService>();
-builder.Services.AddSingleton<TelegramNotificationService>();
-builder.Services.AddSingleton<NotificationServiceFactory>();
+
 // Bind das configurações
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-
-// Registro do serviço
-builder.Services.AddTransient<IEmailService, EmailService>();
-
 builder.Services.Configure<SmsSettings>(builder.Configuration.GetSection("SmsSettings"));
-builder.Services.AddTransient<ISmsService, SmsNotificationService>();
-
 builder.Services.Configure<UserApiSettings>(builder.Configuration.GetSection("UserApi"));
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
+
+// Registro dos serviços
+builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<ISmsService, SmsNotificationService>();
+builder.Services.AddSingleton<TelegramNotificationService>();
+builder.Services.AddSingleton<NotificationServiceFactory>();
 
 var host = builder.Build();
 host.Run();

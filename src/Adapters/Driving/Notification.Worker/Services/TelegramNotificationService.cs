@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using final_challenge_grupo_118_notification.Models;
 using Microsoft.Extensions.Logging;
@@ -6,22 +8,18 @@ using Telegram.BotAPI.AvailableMethods;
 
 namespace final_challenge_grupo_118_notification.Services;
 
-public class TelegramNotificationService : INotificationService
+[ExcludeFromCodeCoverage]
+public class TelegramNotificationService(ILogger<TelegramNotificationService> logger) : INotificationService
 {
-    private readonly ILogger<TelegramNotificationService> _logger;
-
-    public TelegramNotificationService(ILogger<TelegramNotificationService> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<Task> SendAsync(ContentMessage message)
     {
-        _logger.LogInformation($"Sending Telegram message to {message.Recipient}: {message.Content}");
-        // Implementação real de envio de Telegram aqui        // Exemplo de integração com a API do Telegram
+        logger.LogInformation($"Sending Telegram message to {message.Recipient}: {message.Content}");
          var botClient = new TelegramBotClient("YOUR_BOT_TOKEN");
-         await botClient.SendMessageAsync(message.Recipient, message.Content);
+         if (message.Recipient != null && message.Content != null)
+             await botClient.SendMessageAsync(message.Recipient, message.Content);
+         else
+             return Task.FromException<Task>(new Exception("Recipient or content is null"));
 
-        return Task.CompletedTask;
+         return Task.CompletedTask;
     }
 }
