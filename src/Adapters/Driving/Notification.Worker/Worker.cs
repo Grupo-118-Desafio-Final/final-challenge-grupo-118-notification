@@ -83,14 +83,18 @@ public class Worker : BackgroundService
 
                     if (user == null)
                         throw new Exception("User not found");
-
-                    var contentMessage = new ContentMessage()
+                    
+                    var contentMessage = new ContentMessage
                     {
                         Recipient = user.Email,
                         Subject = "Notification",
-                        Content =
-                            $"{user.Name}, Message: {notificationMessage.Message} {(!notificationMessage.IsSuccess ? $" Exception: {notificationMessage.ExceptionMessage}" : "")} CreatedAt: {notificationMessage.CreatedAt}"
+                        Content = GenerateContentMessage(user.Name,
+                            notificationMessage.Message,
+                            notificationMessage.CreatedAt,
+                            notificationMessage.IsSuccess,
+                            notificationMessage.ExceptionMessage)
                     };
+
                     await service.SendAsync(contentMessage);
                 }
 
@@ -107,6 +111,23 @@ public class Worker : BackgroundService
             consumer: consumer);
 
         return Task.CompletedTask;
+    }
+
+    private string GenerateContentMessage(string userName,
+        string Message,
+        DateTimeOffset createdAt,
+        bool isSuccess,
+        string exceptionMessage)
+    {
+        return "<html>" +
+               $"<body>" +
+               $"<h1>Notification</h1>" +
+               $"<p>Dear {userName},</p>" +
+               $"<p>Message: {Message}</p>" +
+               (!isSuccess ? $"<p>Exception: {exceptionMessage}</p>" : "") +
+               $"<p>Created At: {createdAt}</p>" +
+               $"</body>" +
+               $"</html>";
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
